@@ -11,8 +11,9 @@
   <div id="app"></div>
   
   <script language="javascript" type="text/javascript">
-
-    facciata.start('#app',{ view: 'unwrappedGlobe' });
+   
+    var view = window.location.search.substring(1, window.location.search.length).replace(/[^a-zA-Z]+/g, '');
+    facciata.start('#app',{ view: view });
     
   </script>
   

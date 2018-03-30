@@ -11,6 +11,8 @@ let animation;
 let width = 0;
 let height = 0;
 let time = 0;
+let frame = 0;
+let fps = 0;
 
 const camera = {
     type: 'perspective',
@@ -23,17 +25,21 @@ const camera = {
     fovy: 60
 };
 
-const loop = (draw = () => {}, fps = 30) => {
+const loop = (draw = () => {}, options) => {
     let currentTime = Date.now();
     let lastTime = currentTime;
+    let delta = 0;
     const start = () => {
         timeout = setTimeout(() => {
             animation = requestAnimationFrame(start);
-        }, 1000 / fps);
+        }, 1000 / (options.fps || 30));
         currentTime = Date.now();
         draw(time);
-        time += (currentTime - lastTime) / 1000;
+        delta = (currentTime - lastTime) / 1000;
+        fps = Math.round(1 / delta);
+        time += delta;
         lastTime = currentTime;
+        frame++;
     };
     start();
 };
@@ -126,12 +132,18 @@ const getVertices = (path, viewMat, projectionMat) => {
     }, '');
 };
 
+const getPositionFromModel = (path, vertex) => {
+    const modelMat = modelMatrix(path);
+    const tPosition = transform([...vertex, 1.0], modelMat);
+    return [...tPosition];
+};
+
 const start = (id, options = {}) => {
     const parent = document.querySelector(id);
 
     if (!parent) { return null; }
 
-    const view = isString(options.view) ? archive[options.view] : options.view || {};
+    const view = isString(options.view) ? archive[options.view] || {} : options.view || {};
 
     width = parent.clientWidth;
     height = parent.clientHeight;
@@ -152,8 +164,11 @@ const start = (id, options = {}) => {
         updateElement,
         cameraMatix,
         getVertices,
+        getPositionFromModel,
         featureToModel,
-        time
+        time,
+        frame,
+        fps
     });
 
     if (view.before) {

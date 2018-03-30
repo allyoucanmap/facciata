@@ -1,4 +1,3 @@
-/* copyright 2018, stefano bovio @allyoucanmap. */
 
 import countries from '../../data/countries.geo.js';
 import {lerp} from '../../utils/Utils';
@@ -34,14 +33,14 @@ export default {
         });
 
     },
-    loop: ({time, getVertices, updateElement, cameraMatix, camera, width, height}) => {
+    loop: ({frame, getVertices, updateElement, cameraMatix, camera, width, height}) => {
 
         const {viewMat, projectionMat} = cameraMatix(camera, width, height);
 
         paths.forEach((path, idx) => {
 
-            if (time > 3) {
-                if (Math.sin(time * 0.4) > 0.3) {
+            if (frame > 90) {
+                if (Math.sin(frame / 30 * 0.4) > 0.3) {
                     path.model = path.model.map((coord, jdx) => {
                         if (!coord) {
                             return null;
@@ -52,7 +51,7 @@ export default {
                             lerp(coord[2], -countriesLatLng[idx][jdx][2], 0.03)
                         ];
                     });
-                } else if (Math.sin(time * 0.4) < -0.3) {
+                } else if (Math.sin(frame / 30 * 0.4) < -0.3) {
                     path.model = path.model.map((coord, jdx) => {
                         if (!coord) {
                             return null;
@@ -72,7 +71,7 @@ export default {
                 'd': getVertices(path, viewMat, projectionMat),
                 'stroke': '#333',
                 'stroke-width': 0.5,
-                'fill': 'hsl(' + (Math.abs(Math.sin(time)) * 259.0 + idx) + ', 75%, 75%)',
+                'fill': 'hsl(' + (Math.abs(Math.sin(frame / 30)) * 259.0 + idx) + ', 75%, 75%)',
                 'fill-opacity': 0.75
             });
         });

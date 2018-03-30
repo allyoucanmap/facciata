@@ -1,4 +1,3 @@
-/* copyright 2018, stefano bovio @allyoucanmap. */
 
 import {dist} from '../../utils/Utils';
 import {range} from 'lodash';

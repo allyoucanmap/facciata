@@ -1,9 +1,6 @@
 /* copyright 2018, stefano bovio @allyoucanmap. */
 
-import unwrappedGlobe from './views/unwrappedGlobe';
-import seaLandscape from './views/seaLandscape';
+const requireViews = require.context('./views/', true, /\.js$/);
+const views = requireViews.keys().reduce((view, key) => ({...view, [key.replace(/\.js|\.\//g, '')]: requireViews(key).default}), {});
 
-export default {
-    unwrappedGlobe,
-    seaLandscape
-};
+export default views;
